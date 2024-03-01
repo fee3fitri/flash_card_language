@@ -22,12 +22,14 @@ def get_title(index):
 # ---- Show The Next Card  ----- #
 def next_card():
     title = get_title(0)
-    global random_word
+    global random_word, timer
+    window.after_cancel(timer)
     random_word = random.choice(csv_to_dict())
     current_question = random_word[title]
     card_front.itemconfig(card_title, text=title, fill="black")
     card_front.itemconfig(card_word, text=current_question, fill="black")
     card_front.itemconfig(card_bg, image=card_front_img)
+    timer = window.after(3000, flip_card)
 
 
 # ---- Flip The Card ----- #
@@ -47,7 +49,7 @@ def flip_card():
 window = Tk()
 window.title("Flash Card")
 window.config(padx=50, pady=50, background=BG_COLOR)
-window.after(3000, flip_card)
+timer = window.after(3000, flip_card)
 
 # Card Components
 # Front Card Image
