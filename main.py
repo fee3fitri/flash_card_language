@@ -6,8 +6,13 @@ import random
 BG_COLOR = "#B1DDC6"
 random_word = {}
 current_question = ""
-data = pandas.read_csv("data/french_words.csv")
-data_dict = data.to_dict(orient="records")
+
+try:
+    data = pandas.read_csv("data/words_to_learn.csv")
+    data_dict = data.to_dict(orient="records")
+except FileNotFoundError:
+    original_data = pandas.read_csv("data/french_words.csv")
+    data_dict = original_data.to_dict(orient="records")
 
 
 # ---- Getting Data Title ----- #
@@ -44,7 +49,10 @@ def flip_card():
 def known():
     global data_dict, random_word
     data_dict.remove(random_word)
+    new_csv_data = pandas.DataFrame(data_dict)
+    new_csv_data.to_csv("data/words_to_learn.csv", index=False)
     next_card()
+    print(data_dict)
 
 
 # ---- UI Components ----- #
@@ -66,7 +74,7 @@ card_word = card_front.create_text(400, 275, text="", font=("Ariel", 50, "bold")
 
 # Cross Button
 cross_img = PhotoImage(file="images/wrong.png")
-cross_btn = Button(image=cross_img, highlightthickness=0, cursor="hand2", command=next_card)
+cross_btn = Button(image=cross_img, highlightthickness=0, cursor="hand2", command=known)
 cross_btn.grid(row=3, column=0)
 
 # Check Button
