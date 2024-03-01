@@ -25,8 +25,9 @@ def next_card():
     global random_word
     random_word = random.choice(csv_to_dict())
     current_question = random_word[title]
-    card_front.itemconfig(card_title, text=title)
-    card_front.itemconfig(card_word, text=current_question)
+    card_front.itemconfig(card_title, text=title, fill="black")
+    card_front.itemconfig(card_word, text=current_question, fill="black")
+    card_front.itemconfig(card_bg, image=card_front_img)
 
 
 # ---- Flip The Card ----- #
