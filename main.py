@@ -5,26 +5,22 @@ import random
 # Global variables
 BG_COLOR = "#B1DDC6"
 random_word = {}
+current_question = ""
+data = pandas.read_csv("data/french_words.csv")
+data_dict = data.to_dict(orient="records")
 
 
-# ---- Accessing CSV Data ----- #
-def csv_to_dict():
-    data = pandas.read_csv("data/french_words.csv")
-    return data.to_dict(orient="records")
-
-
-# ---- Getting Data Heading/Title ----- #
+# ---- Getting Data Title ----- #
 def get_title(index):
-    data_dict = csv_to_dict()
     return list(data_dict[0].keys())[index]
 
 
 # ---- Show The Next Card  ----- #
 def next_card():
     title = get_title(0)
-    global random_word, timer
+    global random_word, timer, current_question, data_dict
     window.after_cancel(timer)
-    random_word = random.choice(csv_to_dict())
+    random_word = random.choice(data_dict)
     current_question = random_word[title]
     card_front.itemconfig(card_title, text=title, fill="black")
     card_front.itemconfig(card_word, text=current_question, fill="black")
@@ -42,6 +38,13 @@ def flip_card():
     card_front.itemconfig(card_title, text=title, fill="white")
     card_front.itemconfig(card_word, text=current_answer, fill="white")
     card_front.itemconfig(card_bg, image=card_back_img)
+
+
+# ---- Check Button Function ----- #
+def known():
+    global data_dict, random_word
+    data_dict.remove(random_word)
+    next_card()
 
 
 # ---- UI Components ----- #
@@ -68,7 +71,7 @@ cross_btn.grid(row=3, column=0)
 
 # Check Button
 check_img = PhotoImage(file="images/right.png")
-check_btn = Button(image=check_img, highlightthickness=0, cursor="hand2", command=next_card)
+check_btn = Button(image=check_img, highlightthickness=0, cursor="hand2", command=known)
 check_btn.grid(row=3, column=1)
 
 next_card()
